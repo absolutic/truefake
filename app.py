@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api, Resource, reqparse
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
@@ -53,9 +53,10 @@ class Predict(Resource):
 
         out = true_fake_model.predict_proba(X_vec_test)
         out = {'Probability of fake': out[0, 0], 'Probability of true': out[0, 1]}
-
-        return out, 200
-
+        response = jsonify(out)
+        response.status_code = 200
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
 API.add_resource(Predict, '/predict')
 
