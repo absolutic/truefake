@@ -1,5 +1,6 @@
 # app.py
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_restful import Api, Resource, reqparse
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
@@ -9,6 +10,7 @@ import json
 import re
 
 APP = Flask(__name__)
+CORS(APP)
 API = Api(APP)
 
 true_fake_model = joblib.load('true-fake.mdl')
@@ -55,7 +57,6 @@ class Predict(Resource):
         out = {'Probability of fake': out[0, 0], 'Probability of true': out[0, 1]}
         response = jsonify(out)
         response.status_code = 200
-        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
 API.add_resource(Predict, '/predict')
